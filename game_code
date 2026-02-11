@@ -1,0 +1,132 @@
+#the date is 02/08/2026, I'm very bored so I decided to make an adventure game
+#******************************************************************************
+
+
+#make colorful text library
+from colorama import Fore, Style, init
+init()
+
+#variables for the game
+inventory = []
+health = 100
+silvers = 0
+#personality stats
+strength = 10
+intelligence = 10
+speed = 10
+courage = 10
+creativity = 10
+stats_bar = []
+
+#text functions for the game
+#for narration
+def blue(text):
+    return Style.BRIGHT + Fore.BLUE + text + Style.RESET_ALL
+#for prompts
+def Magenta(text):
+    return Fore.MAGENTA + text + Style.RESET_ALL
+#for options
+def MagentaDim (text):
+    return Style.DIM + Fore.MAGENTA + text + Style.RESET_ALL
+#for stats
+def Green(text):
+    return Fore.GREEN + text + Style.RESET_ALL
+
+def initialize_role():
+    #set role attributes
+    global strength, intelligence, speed, courage, creativity, silvers
+    
+    if role == "warrior":
+        print(blue("You have chosen the path of the warrior. You are strong and brave, but lack intelligence."))
+        intelligence = 4
+        speed = 9
+        creativity = 6
+        inventory.append("sword")
+        silvers = 15
+    elif role == "mage":
+        print(blue("You have chosen the path of the mage. You are intelligent and brave, but lack strength."))
+        strength = 4
+        speed = 7
+        creativity = 8
+        inventory.append("staff")
+        silvers = 15
+    elif role == "rogue":
+        print(blue("You have chosen the path of the rogue. You are fast and intelligent, but lack creativity."))
+        creativity = 4
+        strength = 6
+        courage = 9
+        inventory.append("dagger")
+        silvers = 15
+    elif role == "scholar":
+        print(blue("You have chosen the path of the scholar. You are intelligent and creative, but lack courage."))
+        courage = 4
+        speed = 8
+        strength = 7
+        inventory.append("scroll")
+        silvers = 15
+    elif role == "bard":
+        print(blue("You have chosen the path of the bard. You are creative and strong, but lack speed."))
+        speed = 4
+        intelligence = 8
+        courage = 7
+        inventory.append("lute")
+        silvers = 15
+
+    display_all()
+
+#display functions
+def display_stats():
+    print(Green("Strength: " + "[X]" * strength))
+    print(Green("Intelligence: " + "[X]" * intelligence))
+    print(Green("Speed: " + "[X]" * speed))
+    print(Green("Courage: " + "[X]" * courage))
+    print(Green("Creativity: " + "[X]" * creativity))
+
+def display_inventory():
+    print(Green("Inventory:"))
+    for item in inventory:
+        print(Green("- " + item))
+
+def display_silvers():
+    print(Green("Silvers: " + str(silvers)))
+
+def display_health():
+    print(Green("Health: " + str(health)))
+
+def display_all():
+    display_silvers()
+    display_health()
+    print()
+    display_inventory()
+    print()
+    display_stats()
+    print()
+    
+
+#the game muahah
+while True:
+    #initialize the game
+    player = input(Magenta("Enter player name: "))
+    print(blue("Welcome, " + player + ". You have been chosen for the quest of the gods, and must uncover the legendary truth. You must make many decisions in your journey. Choose wisely, for your fate is in your hands."))
+    response = input(Magenta("do you accept your destiny? " + MagentaDim("(yes or no):") + " "))
+
+    if response == "yes":
+        print(blue("Excellent! Your journey begins now."))
+    elif response == "no":
+        print(blue("You have chosen to forfeit your destiny. The gods are not pleased."))
+        break
+
+    print(Magenta("First choose your role:") + MagentaDim(" (warrior, mage, rogue, scholar, bard): "))
+    role = input()
+
+    initialize_role()
+
+    print(blue("You are now " + player + " the " + role + ". Would you like to change your role?") + MagentaDim(" (yes or no): "))
+    response = input()
+    if response == "no":
+        continue
+    elif response == "yes":
+        print(Magenta("choose your role, be warned: this is your last chance:"))
+        role = input()
+        initialize_role()
+    
