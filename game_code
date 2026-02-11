@@ -3,13 +3,16 @@
 
 
 #make colorful text library
+from time import sleep as wait
+import keyboard
 from colorama import Fore, Style, init
 init()
 
 #variables for the game
 inventory = []
-health = 100
+health = 90
 silvers = 0
+mission_time = 0
 #personality stats
 strength = 10
 intelligence = 10
@@ -124,13 +127,68 @@ while True:
     print(blue("You are now " + player + " the " + role + ". Would you like to change your role?") + MagentaDim(" (yes or no): "))
     response = input()
 
-    if response == "no":
-        continue
-    elif response == "yes":
+    if response == "yes":
         print(Magenta("choose your role, be warned: this is your last chance:"))
         role = input()
         inventory.clear()
         initialize_role()
+
+    print(blue("You, " + player + ", are a renowned " + role + " in the kingdom of Astavere."))
+    wait(1)
+    print(blue("One day, you recieve a letter from the King and Queen, requesting your prescence at the castle, with urgency."))
+    wait(1)
+    print(blue("you now must leave your home and head to the castle."))
+    print(Magenta("How do you want to get to the castle?") + MagentaDim(" (walk, horse, carriage): "))
+    response = input()
+
+    if response == "walk":
+        print(blue("you decide to walk to the castle."))
+        wait(1)
+        days = 10 + (10 - speed) // 2
+        
+        #warrior and rogue
+        if speed > 8:
+            print(blue("You arrive at the castle in a timely manner, with a quick journey of " + str(days) + " days."))
+        #mage and scholar
+        elif speed > 5:
+            print(blue("Your journey is slightly longer than you anticipated, taking " + str(days) + " days."))
+            wait(1)
+            print(blue("because of your lack of speed, you have to stop at a village along the way to restock rations."))
+            wait(1)
+            print(blue("you enter the village and find a merchant."))
+            wait(2)
+            print(Magenta("The merchant offers you the following wares:"))
+            print(Magenta("- 5 silvers: bread"))
+            print(Magenta("- 3 silvers: cheese"))
+            print(Magenta("- 4 silvers: fruit"))
+            print(Magenta("- 2 silvers: water"))
+            wait(2)
+            print(Green("Remember, throughout the game, certain items may be better for your health than others, so choose wisely."))
+            wait(1)
+            print(Green("You currently have " + str(silvers) + " silvers, and " + str(health) + " health."))
+            print(MagentaDim("Enter the name of the item you want to buy, or type 'none' to skip: "))
+            response = input()
+            if response == "bread":
+                silvers -= 5
+                health += 5
+            elif response == "cheese":
+                silvers -= 3
+                health += 3
+            elif response == "fruit":
+                silvers -= 4
+                health += 4
+            elif response == "water":
+                silvers -= 2
+                health += 2
+            elif response == "none":
+                health -= 5
+            print(Green("You have " + str(silvers) + " silvers left, and " + str(health) + " health."))
+            
+
+
+                
+
+    break
     
 
         
