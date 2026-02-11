@@ -13,6 +13,9 @@ inventory = []
 health = 90
 silvers = 0
 mission_time = 0
+popularity = 30
+quest_count = 0
+current_status = " "
 #personality stats
 strength = 10
 intelligence = 10
@@ -34,9 +37,12 @@ def MagentaDim (text):
 #for stats
 def Green(text):
     return Fore.GREEN + text + Style.RESET_ALL
-
+#for dialogue
+def Yellow(text):
+    return Fore.YELLOW + text + Style.RESET_ALL
+   
+#set role attributes
 def initialize_role():
-    #set role attributes
     global strength, intelligence, speed, courage, creativity, silvers
     
     if role == "warrior":
@@ -74,43 +80,58 @@ def initialize_role():
         courage = 7
         inventory.append("lute")
         silvers = 15
-
     display_all()
 
-#display functions
+#basic functions
 def display_stats():
     print(Green("Strength: " + "[X]" * strength))
     print(Green("Intelligence: " + "[X]" * intelligence))
     print(Green("Speed: " + "[X]" * speed))
     print(Green("Courage: " + "[X]" * courage))
     print(Green("Creativity: " + "[X]" * creativity))
-
 def display_inventory():
     print(Green("Inventory:"))
     for item in inventory:
         print(Green("- " + item))
-
 def display_silvers():
     print(Green("Silvers: " + str(silvers)))
-
 def display_health():
     print(Green("Health: " + str(health)))
-
+def display_popularity():
+    print(Green("Popularity: " + str(popularity)))
 def display_all():
     display_silvers()
     display_health()
+    display_popularity()
     print()
     display_inventory()
     print()
     display_stats()
     print()
-    
+def quest_instruction():
+    if quest_count == 0:
+        print(Green("You are about to embark on your first side quest of the game! Side quests are optional, but they can help you gain popularity, silvers, and sometimes even items!"))
+        wait(4)
+        print(Green("Your popularity is currently at " + str(popularity) + ". Popularity can affect how NPCs interact with you, and can even unlock certain quests and endings!"))
+        wait(4)
+        print(Green("This side quest is a great opportunity to increase your popularity! However, side quests such as this one can also have consequences on your health. "))
+        wait(4)
+        print(Green("Your health is currently at " + str(health) + ". Health is needed to progress throughout the game. If you have less than 40 health, you will start to experience negative consequences, and if you reach 0 health, it's game over!"))
+        wait(6)
+        print(Green("You will have oppurtunities to increase your health throughout the game, but you can also lose health by making certain decisions."))
+        wait(4)
+        print(Green("You will not always be informed of the consequences or gifts of your decisions, but in this quest, should you accept, you may loose 5-15 health, but you will gain 10-20 popularity amongst other boons."))
+        wait(6)
+        print(Green("You will keep your health if you deny, but you will lose 10 popularity."))
+        wait(4)
+        
 
 #the game muahah
 while True:
     #initialize the game
     player = input(Magenta("Enter player name: "))
     print(blue("Welcome, " + player + ". You have been chosen for the quest of the gods, and must uncover the legendary truth. You must make many decisions in your journey. Choose wisely, for your fate is in your hands."))
+    wait(2)
     response = input(Magenta("do you accept your destiny? " + MagentaDim("(yes or no):") + " "))
 
     if response == "yes":
@@ -119,42 +140,49 @@ while True:
         print(blue("You have chosen to forfeit your destiny. The gods are not pleased."))
         break
 
+    wait(2)
+    #this is where the player chooses the role, and then get to see what that entails
     print(Magenta("First choose your role:") + MagentaDim(" (warrior, mage, rogue, scholar, bard): "))
     role = input()
-
     initialize_role()
-
+    #allows players to change their role once
     print(blue("You are now " + player + " the " + role + ". Would you like to change your role?") + MagentaDim(" (yes or no): "))
     response = input()
-
     if response == "yes":
         print(Magenta("choose your role, be warned: this is your last chance:"))
         role = input()
         inventory.clear()
         initialize_role()
 
+    #gameplay starts here
     print(blue("You, " + player + ", are a renowned " + role + " in the kingdom of Astavere."))
-    wait(1)
+    wait(2)
     print(blue("One day, you recieve a letter from the King and Queen, requesting your prescence at the castle, with urgency."))
-    wait(1)
+    wait(2)
     print(blue("you now must leave your home and head to the castle."))
+    wait(2)
+    
+    #mission sequence 1: travel to the castle
     print(Magenta("How do you want to get to the castle?") + MagentaDim(" (walk, horse, carriage): "))
     response = input()
-
+    #walk option
     if response == "walk":
         print(blue("you decide to walk to the castle."))
-        wait(1)
-        days = 10 + (10 - speed) // 2
+
+        wait(2)
+        mission_time = 10 + (10 - speed) // 2
+
         
-        #warrior and rogue
+        #this option is warrior and rogue whose speed is high
         if speed > 8:
-            print(blue("You arrive at the castle in a timely manner, with a quick journey of " + str(days) + " days."))
-        #mage and scholar
+            print(blue("You arrive at the castle in a timely manner, with a quick journey of " + str(mission_time) + " days."))
+            wait(2)
+        #tgus option mage and scholar, whose speed is medium
         elif speed > 5:
-            print(blue("Your journey is slightly longer than you anticipated, taking " + str(days) + " days."))
-            wait(1)
+            print(blue("Your journey is slightly longer than you anticipated, taking " + str(mission_time) + " days."))
+            wait(2)
             print(blue("because of your lack of speed, you have to stop at a village along the way to restock rations."))
-            wait(1)
+            wait(2)
             print(blue("you enter the village and find a merchant."))
             wait(2)
             print(Magenta("The merchant offers you the following wares:"))
@@ -163,11 +191,14 @@ while True:
             print(Magenta("- 4 silvers: fruit"))
             print(Magenta("- 2 silvers: water"))
             wait(2)
+            #a little bit of instructions for the player to understand the importance of health and silvers
             print(Green("Remember, throughout the game, certain items may be better for your health than others, so choose wisely."))
-            wait(1)
+            wait(2)
             print(Green("You currently have " + str(silvers) + " silvers, and " + str(health) + " health."))
+            wait(2)
             print(MagentaDim("Enter the name of the item you want to buy, or type 'none' to skip: "))
             response = input()
+            #each item affects health and silvers differently
             if response == "bread":
                 silvers -= 5
                 health += 5
@@ -183,6 +214,28 @@ while True:
             elif response == "none":
                 health -= 5
             print(Green("You have " + str(silvers) + " silvers left, and " + str(health) + " health."))
+
+            #Travel side quest for walking mages 
+            if role == "mage":
+                print(blue("As you buy the " + response + ", the merchant notices your staff."))
+                wait(2)
+                print(Yellow("Merchant: Excuse me, friend, but are you a mage?"))
+                wait(2)
+                print(Yellow( "You: I am indeed. My name is " + player + "."))
+                wait(2)
+                print(Yellow("Please, mage " + player + ", I, along with the village folk are in dire need of assistance. Our crops have been failing, and we have no idea why."))
+                wait(2)
+                print(Yellow("Merchant: If you could help us, we would be eternally grateful."))
+                wait(2)
+                quest_instruction()
+                print(Magenta("Do you help the merchant?") + MagentaDim(" (yes or no): "))
+                response = input()
+                if response == "yes":
+                    print(Yellow("You: Of course, kind merchant, I will help your village."))
+                    wait(2)
+                    print(Yellow("Merchant: Thank you so much, mage " + player + "."))
+
+                
             
 
 
