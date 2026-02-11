@@ -123,10 +123,14 @@ while True:
 
     print(blue("You are now " + player + " the " + role + ". Would you like to change your role?") + MagentaDim(" (yes or no): "))
     response = input()
+
     if response == "no":
         continue
     elif response == "yes":
         print(Magenta("choose your role, be warned: this is your last chance:"))
         role = input()
+        inventory.clear()
         initialize_role()
     
+
+        
