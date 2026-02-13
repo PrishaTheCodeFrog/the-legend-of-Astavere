@@ -17,6 +17,8 @@ mission_time = 0
 popularity = 30
 quest_count = 0
 current_status = " "
+friends = []
+foes = []
 #personality stats
 strength = 10
 intelligence = 10
@@ -132,6 +134,30 @@ def quest_instruction():
         typer(Green("You will not always be informed of the consequences or gifts of your decisions, but in this quest, should you accept, you may loose 5-15 health, but you will gain 10-20 popularity amongst other boons."))
         typer(Green("You will keep your health if you deny, but you will lose 15 popularity."))
 
+#classes
+class character:
+    def __init__(self, name, char_type):
+        self.name = name
+        self.char_type = char_type
+        self.relation = None
+        self.info = None
+
+    def friend(self):
+        self.relation = "friendly"
+        friends.append(self)
+        typer(Green(self.name + " is now your friend!"))
+    
+    def foe(self):
+        self.relation = "hostile"
+        foes.append(self)
+        typer(Green(self.name + " is now your foe!"))
+
+    def neutral(self):
+        self.relation = "neutral"
+        typer(Green(self.name + " is now an acquaintance!"))
+
+    def enter_info(self, info):
+        self.info = info
 
 #the game muahah
 while True:
@@ -177,12 +203,9 @@ while True:
             typer(blue("You arrive at the castle in a timely manner, with a quick journey of " + str(mission_time) + " days."))
         #this option is for mage and scholar, whose speed is medium
         elif speed > 5:
-            typer(blue("Your journey is slightly longer than you anticipated, taking " + str(mission_time) + " days."))
-    
+            typer(blue("Your journey is slightly longer than you anticipated, with an expected length of " + str(mission_time) + " days."))
             typer(blue("because of your lack of speed, you have to stop at a village along the way to restock rations."))
-    
             typer(blue("you enter the village and find a merchant."))
-    
             typer(Magenta("The merchant offers you the following wares:"))
             typer(Magenta("- 5 silvers: bread"))
             typer(Magenta("- 3 silvers: cheese"))
@@ -213,41 +236,69 @@ while True:
                 health -= 5
             typer(Green("You have " + str(silvers) + " silvers left, and " + str(health) + " health."))
 
-            #Travel side quest for walking mages 
-            if role == "mage":
-                #Beginning sequence
-                typer(blue("As you buy the " + response + ", the merchant notices your staff."))
-                typer(Yellow("Merchant: Excuse me, friend, but are you a mage?"))
-                typer(Yellow( "You: I am indeed. My name is " + player + "."))
-                typer(Yellow("Please, mage " + player + ", I, along with the village folk are in dire need of assistance. Our crops have been failing, and we have no idea why."))
-                typer(Yellow("Merchant: If you could help us, we would be eternally grateful."))
-                quest_instruction()
-                typer(Magenta("Do you help the merchant?") + MagentaDim(" (yes or no): "))
+            #Beginning sequence of quest 1: the merchant's request
+            typer(blue("As you buy the " + response + ", the merchant notices your " + inventory[0] + "."))
+            typer(Yellow("Merchant: Excuse me, friend, but are you a " + role +"?"))
+            typer(Yellow( "You: I am indeed. My name is " + player + "."))
+            typer(Yellow("Please, " + role + " " + player + ", I, along with the village folk are in dire need of assistance. Our crops have been failing, and we have no idea why."))
+            typer(Yellow("Merchant: If you could help us, we would be eternally grateful."))
+            quest_instruction()
+            typer(Magenta("Do you help the merchant?") + MagentaDim(" (yes or no): "))
+            response = input()
+
+            #the actual side quest (yusss)
+            if response == "yes":
+                quest_count += 1
+                typer(Yellow("You: Of course, kind merchant, I will help your village."))
+                typer(Yellow("Merchant: Thank you so much, " + role + " " + player + "."))
+                #the merchant becaomes an acquaintance, and the player gains popularity for agreeing to help out the village
+                merchant_one = character("Merchant", "merchant")
+                merchant_one.neutral()
+                merchant_one.enter_info("This merchant asked you for help with the village crops when you were buying rations on your way to the castle. He seems to be well liked by the villagers, and is known for being kind and generous.")
+                popularity += 2
+                display_popularity()
+
+                #act 1: farmer's fields
+                typer(blue("You spend the rest of the day investigating the village fields with a farmer the merchant introduced you to, and you discover a strange black coloration to the roots of the crops."))
+                #the amount of time the mission takes increases 
+                mission_time += 1
+                typer(Yellow("Farmer: Those black roots started showing up a few days ago, and since then, the crops have been dying."))
+                typer(Yellow("You: Hmm, that is very strange. I've never seen anything like this. Did anything unusual occur before the black roots started showing up?"))
+                typer(Yellow("Farmer: No, I don't think s- wait, now that you mention it..."))
+                typer(Yellow("You: Hmm?"))
+                typer(Yellow("Farmer: A few days before the roots started turning black, one of the villager's daughter, Illena Lorith, went missing."))
+                typer(Yellow("You: What happened?"))
+                typer(Yellow("Farmer: Now, I don't know exactly, but I heard that she had a sweetheart and they were planning to run away together. But then, she went missing, and no one has seen her since."))
+                typer(Yellow("You: Interesting. Do you know who her sweetheart is?"))
+                typer(Yellow("Farmer: His name was Alric."))
+                typer(Yellow("You: ...was?"))
+                typer(Yellow("Farmer: Its a tragedy, it is. But Alric was found dead in the woods shortly after poor Illena went missing. Poisoned himself, I heard, because of the grief."))
+                typer(blue("Sometime while talking to the Farmer, his daughter, a young girl who'd been tending to the chickens, had started listening to the conversation."))
+                typer(Yellow("Farmer's Daughter: Honestly, I always wondered why Illena was planning to run away with that Alric."))
+                typer(Yellow("Chicken: cluck cluck"))
+                typer(Yellow("You: What's strange about that? Illena running away with Alric, I mean?"))
+                typer(Yellow("Farmer's Daughter: Well you see, Alric was never known to be... faithful. And though I didn't know Illena very well, she always struck me as a tad peculiar. It's hard to describe, but she was a bit unsettling. Didn't seem the type to run away with a boy, much less one like Alric."))
+                typer(blue("Suddenly, the farmer's wife calls for her family to come eat dinner, and the farmer's daughter goes inside. The Farmer lingers for a moment."))
+                typer(Yellow("Farmer: Thank you so much, " + role + " " + player + ", for helping our village. It means a lot to us. If there's anything I can do to repay you, please let me know."))
+                typer(Magenta("You notice the sun setting, and you want to make the most of the daylight. You have a few options of what to do next."))
+                typer(Magenta("Option 1: You can continue investigating the fields, and try to find out more about the black roots."))
+                typer(Magenta("Option 2: You can go talk to the local villagers, and see what they know about the situation of Illena and Alaric."))
+                typer(Magenta("Option 3: You can continue talking to the farmer's daughter, since she seems to have some insight on the matter of Illena's disappearance."))
+                if role == "mage":
+                    typer(Magenta("Option 4: You can use your magical abilities to try to find out more information about the black roots."))
+                if role == "scholar":
+                    typer(Magenta("Option 4: You can go to the local library, and see if you can find any information about the black roots."))
+                typer(Magenta("Which option do you choose?") + MagentaDim(" (1, 2, 3, or 4): "))
                 response = input()
-                #the actual side quest (yusss)
-                if response == "yes":
-                    typer(Yellow("You: Of course, kind merchant, I will help your village."))
-                    typer(Yellow("Merchant: Thank you so much, mage " + player + "."))
-                    popularity += 2
-                    typer(blue("You spend the rest of the day investigating the village fields with a farmer the merchant introduced you to, and you discover a strange black coloration to the roots of the crops."))
-                    mission_time += 1
-                    typer(Yellow("Farmer: Those black roots started showing up a few days ago, and since then, the crops have been dying."))
-                    typer(Yellow("You: Hmm, that is very strange. I've never seen anything like this. Did anything unusual occur before the black roots started showing up?"))
-                    typer(Yellow("Farmer: No, I don't think s- wait, now that you mention it..."))
-                    typer(Yellow("You: Hmm?"))
-                    typer(Yellow("Farmer: A few days before the roots started turning black, one of the villager's daughter, Illena Lorith, went missing."))
-                    typer(Yellow("You: What happened?"))
-                    typer(Yellow("Farmer: Now, I don't know exactly, but I heard that she had a sweetheart and they were planning to run away together. But then, she went missing, and no one has seen her since."))
-                    typer(Yellow("You: Interesting. Do you know who her sweetheart is?"))
-                    typer(Yellow("Farmer: His name was Alric."))
-                    typer(Yellow("...was?"))
-                    typer(Yellow("Farmer: Its a tragedy, it is. But Alric was found dead in the woods shortly after Illena went missing. Poisoned himself, I heard, because of the grief."))
+
+                #act 2: investigating the fields
+                #act 2: questioning the villagers
+                #act 2: talking to the farmer's daughter
+                #act 2: using magic to investigate the fields (mage only)
+                #act 2: researching the black roots in the library (scholar only)
 
 
 
-
-                
-            
 
 
                 
